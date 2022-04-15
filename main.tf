@@ -2,14 +2,6 @@ provider "aws" {
   region  = "eu-central-1"
 }
 
-data "aws_vpc" "vpc" {
-  id = var.vpc_id
-}
-
-data "aws_subnet" "snet" {
-  id = var.subnet_id
-}
-
 resource "aws_ecr_repository" "ecr" {
   name = "${var.user_prefix}-repository-terra"
 }
@@ -41,7 +33,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 
 resource "aws_security_group" "ecs_sg" {
   name = "${var.user_prefix}-sg-terra"  
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -116,7 +108,7 @@ resource "aws_launch_template" "ecs_launch_template" {
 
 resource "aws_autoscaling_group" "asg" {
   name                 = "${var.user_prefix}-asg-terra"
-  vpc_zone_identifier  = [data.aws_subnet.snet.id]
+  vpc_zone_identifier  = [var.subnet_id]
   launch_template {
     id      = aws_launch_template.ecs_launch_template.id
     version = "$Latest"
