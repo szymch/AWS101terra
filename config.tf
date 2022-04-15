@@ -1,12 +1,4 @@
 terraform {
-  cloud {
-    organization = "AWS101"
-
-    workspaces {
-      name = "AWS101Infra"
-    }
-  }
-
   required_version = ">= 0.13.1"
 
   required_providers {
